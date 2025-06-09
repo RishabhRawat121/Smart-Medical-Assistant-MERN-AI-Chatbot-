@@ -1,7 +1,9 @@
 from flask import Flask, render_template, jsonify, request
 from src.helper import download_hugging_face_embeddings
 from langchain_pinecone import PineconeVectorStore
-from langchain_community.llms import Ollama  # <- Use langchain_community
+from langchain_ollama import OllamaLLM
+
+from flask_cors import CORS
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
@@ -11,6 +13,8 @@ import os
 
 app = Flask(__name__)
 
+
+CORS(app,origins=["http://localhost:5173"])
 # ✅ Set Pinecone API key directly or load via dotenv
 os.environ["PINECONE_API_KEY"] = "pcsk_4paSYZ_U58HJwaSWY5k39ZFXWGpCpwaPtgiadAJsGmHTb63AtqNkfWweDJwNioWPaSetKN"
 
@@ -26,7 +30,7 @@ docsearch = PineconeVectorStore.from_existing_index(
 retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k": 3})
 
 # ✅ Use Ollama instead of OpenAI
-llm = Ollama(model="llama3", temperature=0.4)
+llm = OllamaLLM(model="llama3", temperature=0.4)
 
 # ✅ Set up RAG chain
 prompt = ChatPromptTemplate.from_messages([
@@ -42,7 +46,11 @@ def index():
 
 @app.route("/get", methods=["GET", "POST"])
 def chat():
-    msg = request.form["msg"]
+    data = request.get_json()  # get JSON data from request body
+    if not data or "msg" not in data:
+        return "Bad Request: 'msg' key missing", 400
+
+    msg = data["msg"]
     print("User input:", msg)
     response = rag_chain.invoke({"input": msg})
     print("Response:", response["answer"])

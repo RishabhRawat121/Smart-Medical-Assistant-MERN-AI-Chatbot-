@@ -1,15 +1,12 @@
 Metadata-Version: 2.1
 Name: Generative-AI-Project
 Version: 0.0.0
+Summary: UNKNOWN
+Home-page: UNKNOWN
 Author: Rishabh Rawat
 Author-email: rawatrishabh76@gmail.com
-Requires-Dist: sentence-transformers==2.2.2
-Requires-Dist: langchain
-Requires-Dist: flask
-Requires-Dist: pypdf
-Requires-Dist: python-dotenv
-Requires-Dist: pinecone-client[grpc]
-Requires-Dist: langchain-pinecone
-Requires-Dist: langchain_community
-Requires-Dist: langchain_openai
-Requires-Dist: langchain_experimental
+License: UNKNOWN
+Platform: UNKNOWN
+
+UNKNOWN
+
